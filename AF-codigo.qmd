@@ -1,0 +1,49 @@
+---
+title: "ANALISIS FACTORIAL A TRAVES DE COMANDO"
+author: "Nelson de Jesus Magaña Godinez"
+format: pdf
+editor: visual
+---
+
+## Analisis factorial usando codigo de R.
+
+El comando faetona/ permite realizar análisis factorial mediante la siguiente
+
+sintaxis sencilla:
+
+$factorial (\sim v_1 +v_2+...+ v_n, factor=n, rotation =METHOD, escore=METHOD, data=conjunto de datos)$
+
+Las variables $v_1, v_2, … v_n$ son las variables a reducir, factors = n indica el número de factores a considerar, rotation = METHOD permite elegir el método de rotación, scores = METHOD permite calcular las puntuaciones de los factores a través del método especificado y data = Conjunto de datos permite declarar el conjunto de datos que contiene las variables.
+
+En nuestro ejemplo anterior la sintaxis vía comandos sería la siguiente:
+
+```{r}
+factorial <- factanal(~ anal + nes + ocu + ocuin + ocuser + p10 + p14 + p65 + pd + pt + tec + tm, factors = 3, rotation = "varimax", scores = "Bartlett", data = zonamad)
+```
+
+```{r}
+summary(factorial)
+```
+
+```{r}
+factorial
+```
+
+Para las puntuaciones
+
+```{r}
+factorial$scores
+```
+
+Podemos definir las puntuaciones para los tres primeros factores como variables mediante la sintaxis siguiente:
+
+```{r}
+F1=factorial$scores[,1]
+F2=factorial$scores[,2]
+F3=factorial$scores[,3]
+```
+
+```{r}
+library(car)
+scatterplot(F2~F1, reg.line=FALSE)
+```
