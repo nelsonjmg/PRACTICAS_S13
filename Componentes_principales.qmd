@@ -1,0 +1,47 @@
+---
+title: "Analisis de componentes principales a travez de R"
+author: "Nelson de Jesus Magaña Godinez"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(Rcmdr)
+```
+
+```{r}
+zonamad <- 
+  readXL("C:/Users/Usuario/Desktop/respaldo/Desktop/PAQUETE R/PRACTICAS_S13/zonasmad.xlsx",
+   rownames=FALSE, header=TRUE, na="", sheet="zonasmad", 
+  stringsAsFactors=TRUE)
+```
+
+```{r}
+library(base)
+local({
+  .PC <- 
+  princomp(~anal+nes+ocu+ocuin+ocuser+p10+p14+p65+pd+pt+tec+tm,
+   cor=FALSE, data=zonamad)
+  cat("\nComponent loadings:\n")
+  print(unclass(loadings(.PC)))
+  cat("\nComponent variances:\n")
+  print(.PC$sd^2)
+  cat("\n")
+  print(summary(.PC))
+  screeplot(.PC)
+  zonamad <<- within(zonamad, {
+    PC3 <- .PC$scores[,3]
+    PC2 <- .PC$scores[,2]
+    PC1 <- .PC$scores[,1]
+  })
+})
+```
+
+```{r}
+v=c("Centro", "Arganzuela", "Retiro", "Salamanca", "Chamartin", "Tetuan", "Chamberi", "Fuencarral", "Moncloa", "Latina", "Carabanchel", "Villaverde", "Mediodia", "Vallecas", "Moratalaz", "Ciudad Lineal", "San Blas", "Hortaleza")
+```
+
+```{r,fig.height=5,fig.width=7}
+scatterplot(PC2~PC1 | b, regLine=FALSE, smooth=FALSE, 
+  boxplots=FALSE, by.groups=TRUE, data=zonamad)
+```
