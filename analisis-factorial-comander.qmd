@@ -1,0 +1,34 @@
+---
+title: "ANALISIS FACTORIAL EN R"
+format: pdf
+editor: visual
+---
+
+## ANALIISIS FACTORIAL USANDO R-COMMANDER.
+
+```{r}
+library(Rcmdr)
+```
+
+```{r}
+zonamad <- 
+  readXL("C:/Users/Usuario/Desktop/respaldo/Desktop/PAQUETE R/PRACTICAS_S13/zonasmad.xlsx",
+   rownames=FALSE, header=TRUE, na="", sheet="zonasmad", 
+  stringsAsFactors=TRUE)
+```
+
+```{r}
+local({
+  .FA <- factanal(~anal+nes+ocu+ocuin+ocuser+p10+p14+p65+pd+pt+tec+tm, factors=3, rotation="varimax", scores="Bartlett", data=zonamad)
+  print(.FA)
+  zonamad <<- within(zonamad, {
+    F3 <- .FA$scores[,3]
+    F2 <- .FA$scores[,2]
+    F1 <- .FA$scores[,1]
+  })
+})
+```
+
+En la salida se observa la matriz factorial, los valores propios asociados a cada factor (SS loadings), la proporción de varianza explicada por cada factor y la proporción acumulada (entre los tres factores se explica el 86,6% de la variabilidad de los datos). La reducción es bastante buena.
+
+Las puntuaciones de los factores se sitúan como variables adicionales en la parte derecha del conjunto de datos (F1, F2, ...).
