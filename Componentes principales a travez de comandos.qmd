@@ -1,0 +1,72 @@
+---
+title: "COMPONENTES PRINCIPALES A TRAVES DE COMANDOS"
+author: "Nelson de Jesus Magaña Godinez"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(readxl)
+zonasmad <- read_excel("zonasmad.xlsx")
+View(zonasmad)
+```
+
+El comando princomp permite realizar análisis en componentes principales mediante la siguiente sintaxis:
+
+princomp{"V1+V2+ ... +Vn, cor=TRUE, scores=TRUE, data=Conjunto de datos)
+
+las variables vl, v2, ..., vn son las variables a reducir, cor=TRUE permite obtener la matriz de correlaciones entre componentes y variables (matriz factorial), seores= TRUE permite calcular las puntuaciones de las componentes y data=Conjunto de datos permite declarar el conjunto de datos que contiene las variables.
+
+En nuestro ejemplo anterior la sintaxis vía comandos sería la siguiente:
+
+```{r}
+componentes = princomp(~ anal + nes + ocu + ocuin + ocuser + p10 + p14
+  + p65 + pd + pt + tec + tm, cor=TRUE, 
+  scores=TRUE, data = zonasmad)
+```
+
+```{r}
+summary(componentes)
+```
+
+Para ver las puntuaciones utilizamos la sintaxis siguiente:
+
+```{r}
+componentes$scores
+```
+
+Para ver la matriz factorial utilizamos la siguiente sintaxis:
+
+```{r}
+print(unclass(loadings(componentes)))
+```
+
+Para aislar las puntuaciones de las tres primeras componentes usamos la sintaxis
+
+siguiente:
+
+```{r}
+COMP1=componentes$scores[,1]
+COMP2=componentes$scores[,2]
+COMP3=componentes$scores[,3]
+```
+
+Ahora ya podemos representar las puntuaciones de la primera componente contra las puntuaciones de la segunda.
+
+```{r}
+v = c("Centro", "Arganzuela", "Retiro", "Salamanca", "Chamartin", "Tetuan", "Chamberi",
+      "Fuencarral", "Moncloa", "Latina",
+      "Carabanchel", "Villaverde", "Mediodia",
+      "Vallecas", "Moratalaz", "Ciudad Lineal",
+      "San Blas", "Hortaleza")
+v=as.factor(v)
+```
+
+```{r,fig.height=5,fig.width=7}
+library(car)
+scatterplot(COMP1 ~ COMP2, reg.line = FALSE,
+            smooth = FALSE, spread = FALSE,
+            boxplots = FALSE, span = 0.5, 
+            data = zonasmad,
+            id.n = 18)
+```
